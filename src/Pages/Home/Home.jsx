@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useHistory } from "react-router-dom"
 
 import Papa from "papaparse";
@@ -12,6 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { AiFillFileAdd } from "react-icons/ai"
 
@@ -30,7 +32,8 @@ const Home = () => {
         file: "",
         companyDetails: "",
         invoiceNotes: "",
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(),
+        selectedCountry: "null"
     })
     const [errorData, setErrorData] = useState({
         companyName: false,
@@ -38,11 +41,15 @@ const Home = () => {
         file: false,
         companyDetails: false,
         invoiceNotes: false,
+        selectedCountry: false,
     })
     const [fileData, setFileData] = useState(null)
+    const [countries, setCountries] = useState(null)
+
 
     const enteringData = (event) => {
         let { name, value } = event.target;
+        console.log(name, value);
 
         setEnteredData((preVal) => {
             return {
@@ -76,6 +83,12 @@ const Home = () => {
                 file: event.target.files[0]
             }
         })
+        setErrorData((preVal) => {
+            return {
+                ...preVal,
+                file: false
+            }
+        })
     }
 
 
@@ -90,11 +103,9 @@ const Home = () => {
 
     const genertingResult = () => {
 
-        if (enteredData.companyName || enteredData.invoiceNumber || enteredData.file || enteredData.companyDetails || enteredData.invoiceNotes) {
-            history.push({ pathname: "/invoice", state: { enteredData } })
-        } else {
+        if (!enteredData.companyName || !enteredData.invoiceNumber || !enteredData.file || !enteredData.companyDetails || !enteredData.invoiceNotes || enteredData.selectedCountry == "null") {
             Object.keys(enteredData).map((key, index) => {
-                if (!enteredData[key]) {
+                if (!enteredData[key] || enteredData[key] == "null") {
                     setErrorData((preVal) => {
                         return {
                             ...preVal,
@@ -103,9 +114,29 @@ const Home = () => {
                     })
                 }
             })
+        } else {
+            history.push({ pathname: "/invoice", state: { enteredData } })
         }
 
     }
+
+    useEffect(() => {
+        if (enteredData.file) {
+            handleParse()
+        }
+    }, [enteredData])
+    useEffect(() => {
+        if (fileData) {
+            let allCountries = []
+            fileData.map((data) => {
+                if (data.country && allCountries.indexOf(data.country) == -1) {
+                    console.log("kkkk", data);
+                    allCountries.push(data.country)
+                }
+            })
+            setCountries(allCountries)
+        }
+    }, [fileData])
 
     console.log("----CSV----", fileData);
     return (
@@ -150,7 +181,38 @@ const Home = () => {
                         </LocalizationProvider>
                         <FormControl fullWidth variant="filled">
                             <InputLabel>Earnings File</InputLabel>
-                            <FilledInput
+                            <Select
+                                labelId="demo-simple-select-filled-label"
+                                id="demo-simple-select-filled"
+                                disabled={countries ? false : true}
+                                defaultValue="null"
+                                value={enteredData.selectedCountry}
+                                error={errorData.file || errorData.selectedCountry ? true : false}
+                                onChange={enteringData}
+                                name="selectedCountry"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={clickUpload}
+                                            edge="end"
+                                        >
+                                            <AiFillFileAdd color={countries ? "green" : null} />
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                            >
+                                <MenuItem value="null">NONE</MenuItem>
+                                {
+                                    countries && countries.map((data) => {
+                                        console.log(data);
+                                        return (
+                                            <MenuItem value={data}>{data}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                            {/* <FilledInput
                                 disabled
                                 error={errorData.file}
                                 helperText={errorData.file && "This Field is Requried"}
@@ -168,7 +230,7 @@ const Home = () => {
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                            />
+                            /> */}
                         </FormControl>
                         <div className="fileinput" style={{ display: "none" }}>
                             <input ref={hiddenInput} type="file" onChange={uploadFile} />
