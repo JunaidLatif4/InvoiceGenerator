@@ -23,9 +23,11 @@ const App = () => {
                 draggable
                 pauseOnHover
             />
+            <div className="app_container">
             <Switch>
                 <Route exact path="/" component={Home} />
             </Switch>
+            </div>
         </>
     )
 }
