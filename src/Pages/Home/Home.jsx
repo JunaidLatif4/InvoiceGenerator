@@ -115,7 +115,7 @@ const Home = () => {
                 }
             })
         } else {
-            history.push({ pathname: "/invoice", state: { enteredData } })
+            history.push({ pathname: "/invoice", state: { enteredData , fileData } })
         }
 
     }

@@ -1,5 +1,24 @@
 @import url('https://rsms.me/inter/inter.css');
 
+.invoice-template_container{
+    position: relative;
+}
+.export_btn{
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    z-index: 66;
+    
+    .btn{
+        background-color: #26a69a;
+        border-radius: 50rem;
+        width: 60px;
+        height: 60px;
+        font-size: .6rem;
+        color: white;
+    }
+}
+
 .pdf-page {
     position: relative;
     margin: 0 auto;
