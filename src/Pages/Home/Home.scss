@@ -4,7 +4,8 @@
     box-sizing: border-box;
     margin: 2rem auto;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px 5px #26a6992d;
 
     display: flex;
     flex-direction: column;
@@ -14,6 +15,7 @@
         font-size: 1.5rem;
 
         span {
+            color: #26a69a;
             font-weight: bold;
         }
     }
@@ -28,6 +30,11 @@
             width: -webkit-fill-available;
             display: flex;
             gap: 2rem;
+
+            .btn{
+                background-color: #26a69a;
+                color: white;
+            }
         }
     }
 }

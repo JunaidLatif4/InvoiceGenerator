@@ -1,11 +1,14 @@
+import '@progress/kendo-theme-material/dist/all.css';
 import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
 import Home from "./Pages/Home/Home"
+import InvoiceTemplate from './Pages/InvoiceTemplace/InvoiceTemplate';
 
 import { ToastContainer, toast } from "react-toastify"
 
 import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
@@ -26,6 +29,7 @@ const App = () => {
             <div className="app_container">
             <Switch>
                 <Route exact path="/" component={Home} />
+                <Route path="/invoice" component={InvoiceTemplate} />
             </Switch>
             </div>
         </>
