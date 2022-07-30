@@ -32,8 +32,9 @@ const Home = () => {
         file: "",
         companyDetails: "",
         invoiceNotes: "",
-        date: new Date().toLocaleDateString(),
-        selectedCountry: "null"
+        date: new Date(),
+        selectedCountry: "null",
+        address: "Google Commerce Limited (IRELAND)"
     })
     const [errorData, setErrorData] = useState({
         companyName: false,
@@ -115,7 +116,7 @@ const Home = () => {
                 }
             })
         } else {
-            history.push({ pathname: "/invoice", state: { enteredData , fileData } })
+            history.push({ pathname: "/invoice", state: { enteredData, fileData } })
         }
 
     }
@@ -129,9 +130,9 @@ const Home = () => {
         if (fileData) {
             let allCountries = []
             fileData.map((data) => {
-                if (data.country && allCountries.indexOf(data.country) == -1) {
+                if (data["Buyer Country"] && allCountries.indexOf(data["Buyer Country"]) == -1) {
                     console.log("kkkk", data);
-                    allCountries.push(data.country)
+                    allCountries.push(data["Buyer Country"])
                 }
             })
             setCountries(allCountries)
@@ -235,6 +236,22 @@ const Home = () => {
                         <div className="fileinput" style={{ display: "none" }}>
                             <input ref={hiddenInput} type="file" onChange={uploadFile} />
                         </div>
+                    </div>
+                    <div className="line">
+                        <FormControl fullWidth variant="filled">
+                            <InputLabel>Partner Address</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-filled-label"
+                                id="demo-simple-select-filled"
+                                value={enteredData.address}
+                                onChange={enteringData}
+                                name="address"
+                            >
+                                <MenuItem value="Google Commerce Limited (IRELAND)">Google Commerce Limited (IRELAND)</MenuItem>
+                                <MenuItem value="Google Inc. (US/Americas)">Google Inc. (US/Americas)</MenuItem>
+                                <MenuItem value="Google Asia Pacific Pte. Ltd. (Asia)">Google Asia Pacific Pte. Ltd. (Asia)</MenuItem>
+                            </Select>
+                        </FormControl>
                     </div>
                     <div className="line">
                         <TextField

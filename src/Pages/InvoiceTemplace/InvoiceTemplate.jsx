@@ -21,6 +21,8 @@ const InvoiceTemplate = () => {
 
     const [enteredData, setEnteredData] = useState(null)
     const [fileData, setFileData] = useState(null)
+    const [selectedCountryData, setSelectedCountryData] = useState(null)
+    const [restCountryData, setRestCountryData] = useState(null)
 
     let today = new Date()
 
@@ -36,14 +38,28 @@ const InvoiceTemplate = () => {
 
     }, [])
 
+    const filteringData = async () => {
+        let sData = await fileData.filter((data) => data["Buyer Country"] == enteredData.selectedCountry)
+        let rData = await fileData.filter((data) => data["Buyer Country"] != enteredData.selectedCountry)
+        setSelectedCountryData(sData)
+        setRestCountryData(rData)
+        console.log("--------SSSSSSSSSS-----------", sData);
+        console.log("--------RRRRRRRRRR-----------", rData);
+    }
+
+    useEffect(() => {
+        if (enteredData && fileData) {
+            filteringData()
+        }
+    }, [enteredData, fileData])
 
     return (
-        enteredData && fileData &&
+        enteredData && fileData && selectedCountryData && restCountryData &&
         <>
             <div className='invoice-template_container'>
-                    <div className="export_btn">
-                        <Button className='btn' onClick={handleExportWithComponent}>Export</Button>
-                    </div>
+                <div className="export_btn">
+                    <Button className='btn' onClick={handleExportWithComponent}>Export</Button>
+                </div>
                 <div className="page-container hidden-on-narrow">
                     <PDFExport ref={pdfExportComponent}>
                         <div className={`pdf-page size-a4`}>
@@ -57,10 +73,10 @@ const InvoiceTemplate = () => {
                                 </div>
                                 <div className="pdf-footer">
                                     <p>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda eligendi recusandae molestiae sunt quo omnis nisi cupiditate nobis quos
+                                        {enteredData.companyDetails}
                                     </p>
-                                    <p>
-                                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi provident culpa, inventore
+                                    <p style={{fontStyle:"italic" , color:"#26a69a"}}>
+                                        {enteredData.invoiceNotes}
                                     </p>
                                 </div>
                                 <div className="addresses">
@@ -68,7 +84,8 @@ const InvoiceTemplate = () => {
                                         <h3>Invoice For</h3>
                                         <div className="f_data">
                                             <p>
-                                                {enteredData.companyName}
+                                                {enteredData.companyName} <br />
+                                                {enteredData.address}
                                             </p>
                                             <p>
                                                 Invoice ID: {enteredData.invoiceNumber}<br />
@@ -88,31 +105,31 @@ const InvoiceTemplate = () => {
                                         <div class="table-content">
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Units Sold </div>
-                                                <div class="table-data2">2</div>
+                                                <div class="table-data2">{selectedCountryData.length}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Sales</div>
-                                                <div class="table-data2">1</div>
+                                                <div class="table-data2">{parseFloat(selectedCountryData.filter((data) => data["Transaction Type"] == "Charge").reduce((pVal , cVal , index)=> pVal+ Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Withheld</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(selectedCountryData.filter((data) => data["Transaction Type"] == "Tax").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(selectedCountryData.filter((data) => data["Transaction Type"] == "TaxCharge refund").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Google Fees</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(selectedCountryData.filter((data) => data["Transaction Type"] == "Google fee").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Paid to Supplier </div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                         </div>
                                     </div>
@@ -124,31 +141,31 @@ const InvoiceTemplate = () => {
                                         <div class="table-content">
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Units Sold </div>
-                                                <div class="table-data2">2</div>
+                                                <div class="table-data2">{restCountryData.length}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Sales</div>
-                                                <div class="table-data2">1</div>
+                                                <div class="table-data2">{parseFloat(restCountryData.filter((data) => data["Transaction Type"] == "Charge").reduce((pVal , cVal , index)=> pVal+ Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Withheld</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(restCountryData.filter((data) => data["Transaction Type"] == "Tax").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(restCountryData.filter((data) => data["Transaction Type"] == "TaxCharge refund").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Google Fees</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(restCountryData.filter((data) => data["Transaction Type"] == "Google fee").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Paid to Supplier </div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                         </div>
                                     </div>
@@ -162,31 +179,31 @@ const InvoiceTemplate = () => {
                                         <div class="table-content">
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Units Sold </div>
-                                                <div class="table-data2">2</div>
+                                                <div class="table-data2">{fileData.length}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Mobile App Sales</div>
-                                                <div class="table-data2">1</div>
+                                                <div class="table-data2">{parseFloat(fileData.filter((data) => data["Transaction Type"] == "Charge").reduce((pVal , cVal , index)=> pVal+ Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Withheld</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(fileData.filter((data) => data["Transaction Type"] == "Tax").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(fileData.filter((data) => data["Transaction Type"] == "TaxCharge refund").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Tax Refunds</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Google Fees</div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">{parseFloat(fileData.filter((data) => data["Transaction Type"] == "Google fee").reduce((pVal , cVal , index)=> pVal - Number(cVal["Amount (Merchant Currency)"]) , 0)).toFixed(3)}</div>
                                             </div>
                                             <div class="table-row">
                                                 <div class="table-data">Paid to Supplier </div>
-                                                <div class="table-data2">0</div>
+                                                <div class="table-data2">0.000</div>
                                             </div>
                                         </div>
                                     </div>
