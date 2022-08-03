@@ -34,7 +34,8 @@ const Home = () => {
         invoiceNotes: "",
         date: new Date(),
         selectedCountry: "null",
-        address: "Google Commerce Limited (IRELAND)"
+        address: "Google Commerce Limited (IRELAND)",
+        extra: "",
     })
     const [errorData, setErrorData] = useState({
         companyName: false,
@@ -43,6 +44,7 @@ const Home = () => {
         companyDetails: false,
         invoiceNotes: false,
         selectedCountry: false,
+        extra: false
     })
     const [fileData, setFileData] = useState(null)
     const [countries, setCountries] = useState(null)
@@ -252,6 +254,16 @@ const Home = () => {
                                 <MenuItem value="Google Asia Pacific Pte. Ltd. (Asia)">Google Asia Pacific Pte. Ltd. (Asia)</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                            id="filled-required"
+                            label="Extra details"
+                            variant="filled"
+                            fullWidth
+                            name='extra'
+                            onChange={enteringData}
+                            error={errorData.extra}
+                            helperText={errorData.extra && "This Field is Requried"}
+                        />
                     </div>
                     <div className="line">
                         <TextField
