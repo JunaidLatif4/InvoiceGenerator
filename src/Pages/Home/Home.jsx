@@ -15,6 +15,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+import allCountries from "../../AllCountriesData"
+
 import { AiFillFileAdd } from "react-icons/ai"
 
 import "./Home.scss"
@@ -207,13 +209,21 @@ const Home = () => {
                             >
                                 <MenuItem value="null">NONE</MenuItem>
                                 {
+                                    allCountries && allCountries.map((data) => {
+                                        console.log(data);
+                                        return (
+                                            <MenuItem value={data.code}>{data.code}</MenuItem>
+                                        )
+                                    })
+                                }
+                                {/* {
                                     countries && countries.map((data) => {
                                         console.log(data);
                                         return (
                                             <MenuItem value={data}>{data}</MenuItem>
                                         )
                                     })
-                                }
+                                } */}
                             </Select>
                             {/* <FilledInput
                                 disabled
