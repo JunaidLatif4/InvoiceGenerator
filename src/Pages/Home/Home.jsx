@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom"
 import Papa from "papaparse";
 
 import { Button, TextField } from "@mui/material"
-import FilledInput from '@mui/material/FilledInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 import allCountries from "../../AllCountriesData"
 
@@ -225,25 +224,6 @@ const Home = () => {
                                     })
                                 } */}
                             </Select>
-                            {/* <FilledInput
-                                disabled
-                                error={errorData.file}
-                                helperText={errorData.file && "This Field is Requried"}
-                                defaultValue={"AddFile"}
-                                value={enteredData.file?.name}
-                                id="filled-adornment-password"
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={clickUpload}
-                                            edge="end"
-                                        >
-                                            <AiFillFileAdd />
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            /> */}
                         </FormControl>
                         <div className="fileinput" style={{ display: "none" }}>
                             <input ref={hiddenInput} type="file" onChange={uploadFile} />
